@@ -3,13 +3,16 @@ on:
 push:
  tags:
   - 'v*'
+
 jobs:
 build-and-deploy:
  runs-on: ubuntu-latest
  steps:
+
   # 下载源码
  - name: Checkout
   uses: actions/checkout@master
+
   # 打包构建
  - name: Build
   uses: actions/setup-node@master
@@ -17,6 +20,7 @@ build-and-deploy:
  - run: npm run build
  - run: tar -zcvf release.tgz .nuxt static app.js nuxt.config.js package.json
 package-lock.json ecosystem.config.js pm2.config.json
+
   # 发布 Release
  - name: Create Release
   id: create_release
@@ -28,6 +32,7 @@ package-lock.json ecosystem.config.js pm2.config.json
    release_name: Release ${{ github.ref }}
    draft: false
    prerelease: false
+
   # 上传构建结果到 Release
  - name: Upload Release Asset
   id: upload-release-asset
@@ -43,6 +48,7 @@ steps
    asset_path: ./release.tgz
    asset_name: release.tgz
    asset_content_type: application/x-tgz
+
   # 部署到服务器
  - name: Deploy
   uses: appleboy/ssh-action@master
@@ -53,8 +59,7 @@ steps
    port: ${{ secrets.PORT }}
    script: |
     cd /root/realworld-nuxtjs
-    wget https://github.com/lipengzhou/realworld-
-nuxtjs/releases/latest/download/release.tgz -O release.tgz
+    wget https://github.com/Creepin-bling/creepin-bling/releases/latest/download/release.tgz -O release.tgz
     tar zxvf release.tgz
     npm install --production
     pm2 reload pm2.config.json
